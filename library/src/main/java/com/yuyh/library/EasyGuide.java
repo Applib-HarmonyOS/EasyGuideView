@@ -1,79 +1,94 @@
-package com.yuyh.library;
+/*
+ * Copyright (C) 2020-21 Application Library Engineering Group
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+package com.yuyh.library;
 
 import com.yuyh.library.bean.Confirm;
 import com.yuyh.library.bean.HighlightArea;
 import com.yuyh.library.bean.Message;
 import com.yuyh.library.bean.TipsView;
 import com.yuyh.library.constant.Constants;
-import com.yuyh.library.support.HShape;
 import com.yuyh.library.support.OnStateChangedListener;
 import com.yuyh.library.view.EasyGuideView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.MotionEvent.ACTION_UP;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import ohos.agp.components.*;
+import ohos.agp.components.element.ShapeElement;
+import ohos.agp.utils.Color;
+import ohos.agp.utils.TextAlignment;
+import ohos.hiviewdfx.HiLog;
+import ohos.hiviewdfx.HiLogLabel;
+import ohos.multimodalinput.event.TouchEvent;
+import ohos.app.Context;
+import ohos.agp.components.Component.ClickedListener;
+import ohos.multimodalinput.event.MmiPoint;
+import ohos.agp.window.service.DisplayManager;
+import ohos.agp.utils.LayoutAlignment;
+import ohos.aafwk.ability.AbilitySlice;
+
+import static ohos.agp.components.ComponentContainer.LayoutConfig.MATCH_CONTENT;
+import static ohos.agp.components.ComponentContainer.LayoutConfig.MATCH_PARENT;
 
 /**
- * 新手引导
+ * EasyGuide implemenation
  * <p>
  * https://github.com/smuyyh/EasyGuideView
  *
- * @author yuyh.
- * @date 2016/12/24.
+ * @author yuyh
+ * @date 2016/12/24
  */
 public class EasyGuide {
+    private static final HiLogLabel HILOG_LABEL1 = new HiLogLabel(0, 0, "Jobin");
 
-    private Activity mActivity;
-    private FrameLayout mParentView;
+    private AbilitySlice mActivity;
+
+    private StackLayout mParentView;
+
     private EasyGuideView mGuideView;
-    private LinearLayout mTipView;
 
-    private List<HighlightArea> mAreas = new ArrayList<>();
-    private List<TipsView> mIndicators = new ArrayList<>();
-    private List<Message> mMessages = new ArrayList<>();
+    private List<HighlightArea> mAreas;
+
+    private List<TipsView> mIndicators;
+
+    private List<Message> mMessages;
+
     private Confirm mConfirm;
+
     private boolean dismissAnyWhere;
+
     private boolean performViewClick;
 
     private OnStateChangedListener listener;
 
-    public EasyGuide(Activity activity) {
-        this(activity, null, null, null, null, true, false);
-    }
-
-    public EasyGuide(Activity activity, List<HighlightArea> areas, List<TipsView> indicators,
-                     List<Message> messages, Confirm confirm, boolean dismissAnyWhere, boolean performViewClick) {
+    public EasyGuide(AbilitySlice activity, List<HighlightArea> areas, List<TipsView> indicators, List<Message> messages, Confirm confirm, boolean[] dismissandperformclick, StackLayout componentContainer) {
         this.mActivity = activity;
         this.mAreas = areas;
         this.mIndicators = indicators;
         this.mMessages = messages;
         this.mConfirm = confirm;
-        this.dismissAnyWhere = dismissAnyWhere;
-        this.performViewClick = performViewClick;
-
-        mParentView = (FrameLayout) mActivity.getWindow().getDecorView();
-
+        this.dismissAnyWhere = dismissandperformclick[0];
+        this.performViewClick = dismissandperformclick[1];
+        mParentView = componentContainer;
     }
 
+
     /**
-     * 设置引导提示 状态改变(显示/取消) 监听
+     * Add the listener
      *
      * @param listener
      */
@@ -82,200 +97,179 @@ public class EasyGuide {
     }
 
     /**
-     * 显示引导提示
+     * Show dialog
      */
     public void show() {
         mGuideView = new EasyGuideView(mActivity);
         mGuideView.setHightLightAreas(mAreas);
-
-        mTipView = new LinearLayout(mActivity);
-        mTipView.setGravity(Gravity.CENTER_HORIZONTAL);
-        mTipView.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        mTipView.setOrientation(LinearLayout.VERTICAL);
-
+        DirectionalLayout mTipView = new DirectionalLayout(mActivity);
+        mTipView.setAlignment(LayoutAlignment.HORIZONTAL_CENTER);
+        mTipView.setLayoutConfig(new DirectionalLayout.LayoutConfig(MATCH_PARENT, MATCH_CONTENT));
+        mTipView.setOrientation(DirectionalLayout.VERTICAL);
         if (mIndicators != null) {
             for (TipsView tipsView : mIndicators) {
-                addView(tipsView.view, tipsView.offsetX, tipsView.offsetY, tipsView.params);
+                addView(tipsView.getView(), tipsView.getOffsetX(), tipsView.getOffsetY(), tipsView.getParams());
             }
         }
-
         if (mMessages != null) {
             int padding = dip2px(mActivity, 5);
             for (Message message : mMessages) {
-                TextView tvMsg = new TextView(mActivity);
-                tvMsg.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+                Text tvMsg = new Text(mActivity);
+                tvMsg.setLayoutConfig(new ComponentContainer.LayoutConfig(MATCH_PARENT, MATCH_CONTENT));
                 tvMsg.setPadding(padding, padding, padding, padding);
-                tvMsg.setGravity(Gravity.CENTER);
-                tvMsg.setText(message.message);
-                tvMsg.setTextColor(Color.WHITE);
-                tvMsg.setTextSize(message.textSize == -1 ? 12 : message.textSize);
-
-                mTipView.addView(tvMsg);
+                tvMsg.setTextAlignment(TextAlignment.CENTER);
+                tvMsg.setText(message.getMessagetext());
+                Color hmosColor = EasyGuide.changeParamToColor(ohos.agp.utils.Color.WHITE.getValue());
+                tvMsg.setTextColor(hmosColor);
+                tvMsg.setTextSize(50);
+                mTipView.addComponent(tvMsg);
             }
         }
-
         if (mConfirm != null) {
-            TextView tvConfirm = new TextView(mActivity);
-            tvConfirm.setGravity(Gravity.CENTER);
-            tvConfirm.setText(mConfirm.text);
-            tvConfirm.setTextColor(Color.WHITE);
-            tvConfirm.setTextSize(mConfirm.textSize == -1 ? 13 : mConfirm.textSize);
-            tvConfirm.setBackgroundResource(R.drawable.btn_selector);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            params.topMargin = dip2px(mActivity, 10);
-            tvConfirm.setLayoutParams(params);
+            Text tvConfirm = new Text(mActivity);
+            tvConfirm.setTextAlignment(TextAlignment.CENTER);
+            tvConfirm.setText(mConfirm.getText());
+            Color hmosColor1 = EasyGuide.changeParamToColor(ohos.agp.utils.Color.WHITE.getValue());
+            tvConfirm.setTextColor(hmosColor1);
+            tvConfirm.setTextSize(50);
+            tvConfirm.setBackground(new ShapeElement(mActivity.getContext(), ResourceTable.Graphic_btn_selector));
+            ohos.agp.components.DirectionalLayout.LayoutConfig params = new DirectionalLayout.LayoutConfig(MATCH_CONTENT, MATCH_CONTENT);
+            params.setMarginTop(dip2px(mActivity, 10));
+            tvConfirm.setLayoutConfig(params);
             int lr = dip2px(mActivity, 8);
             int tb = dip2px(mActivity, 5);
             tvConfirm.setPadding(lr, tb, lr, tb);
-            tvConfirm.setOnClickListener(mConfirm.listener != null ?
-                    mConfirm.listener : new View.OnClickListener() {
+            tvConfirm.setClickedListener(mConfirm.getListener() != null ? mConfirm.getListener() : new Component.ClickedListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(Component v) {
                     dismiss();
                 }
             });
-
-            mTipView.addView(tvConfirm);
+            mTipView.addComponent(tvConfirm);
         }
+        addView(mTipView, Constants.CENTER, Constants.CENTER, new DependentLayout.LayoutConfig(MATCH_PARENT, MATCH_CONTENT));
+        mParentView.addComponent(mGuideView, new StackLayout.LayoutConfig(MATCH_PARENT, MATCH_PARENT));
+        addListener();
+        HiLog.error(HILOG_LABEL1, "Add View");
+    }
 
-        addView(mTipView, Constants.CENTER, Constants.CENTER, new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-
-        mParentView.addView(mGuideView, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-
+    private void addListener() {
         if (dismissAnyWhere || performViewClick) {
             mGuideView.setClickable(true);
-            mGuideView.setOnTouchListener(new View.OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case ACTION_UP:
-                            if (mAreas.size() > 0) {
-
-                                for (HighlightArea area : mAreas) {
-                                    final View view = area.mHightlightView;
-
-                                    // 如果点击事件作用在该View上
-                                    if (view != null && inRangeOfView(view, event)) {
-
-                                        dismiss();
-
-                                        if (listener != null) {
-                                            listener.onHeightlightViewClick(view);
-                                        }
-
-                                        if (performViewClick) {
-                                            view.performClick();
-                                        }
-                                    } else if (dismissAnyWhere) {
-                                        dismiss();
-                                    }
-                                }
-                                return true;
-                            } else {
-                                dismiss();
-                                return false;
-                            }
-                        default:
-                            break;
-                    }
-                    return true;
-                }
-            });
+            addTouchListener();
         }
-
         if (listener != null) {
             listener.onShow();
         }
     }
 
+    private void addTouchListener() {
+        mGuideView.setTouchEventListener(new Component.TouchEventListener() {
+            @Override
+            public boolean onTouchEvent(Component v, TouchEvent event) {
+                if (event.getAction() == TouchEvent.PRIMARY_POINT_UP) {
+                    if (mAreas.size() > 0) {
+                        return handleTouchPointUpEvent(event);
+                    } else {
+                        dismiss();
+                        return false;
+                    }
+                }
+                return true;
+            }
+        });
+    }
+
+    private boolean handleTouchPointUpEvent(TouchEvent event) {
+        for (HighlightArea area : mAreas) {
+            final Component view = area.getmHightlightView();
+            if (view != null && inRangeOfView(view, event)) {
+                dismiss();
+                if (listener != null) {
+                    listener.onHeightlightViewClick(view);
+                }
+                if (performViewClick) {
+                    view.simulateClick();
+                }
+            } else if (dismissAnyWhere) {
+                dismiss();
+            }
+        }
+        return true;
+    }
+
+
     /**
-     * 取消引导提示
+     * Dismiss the dialog
      */
     public void dismiss() {
         mGuideView.recyclerBitmap();
-        if (mParentView.indexOfChild(mGuideView) > 0) {
-            mParentView.removeView(mGuideView);
-
+        if (mParentView.getChildIndex(mGuideView) > 0) {
+            mParentView.removeComponent(mGuideView);
             if (listener != null) {
                 listener.onDismiss();
             }
         }
     }
 
-    /**
-     * 添加任意 View 到引导提示的布局上
-     *
-     * @param view
-     * @param offsetX X轴偏移，正数表示从布局的左侧往右偏移量，负数表示从布局的右侧往左偏移量。{@link Constants#CENTER}表示居中
-     * @param offsetY Y轴偏移，正数表示从上往下，负数表示从下往上。{@link Constants#CENTER}表示居中
-     * @param params  参数
-     */
-    private void addView(View view, int offsetX, int offsetY, RelativeLayout.LayoutParams params) {
-        if (params == null)
-            params = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-
+    private void addView(Component view, int offsetX, int offsetY, ohos.agp.components.DependentLayout.LayoutConfig params) {
+        if (params == null) {
+            params = new DependentLayout.LayoutConfig(MATCH_CONTENT, MATCH_CONTENT);
+        }
         if (offsetX == Constants.CENTER) {
-            params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+            params.addRule(DependentLayout.LayoutConfig.HORIZONTAL_CENTER, DependentLayout.LayoutConfig.TRUE);
         } else if (offsetX < 0) {
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-            params.rightMargin = -offsetX;
+            params.addRule(DependentLayout.LayoutConfig.ALIGN_PARENT_RIGHT, DependentLayout.LayoutConfig.TRUE);
+            params.setMarginRight(-offsetX);
         } else {
-            params.leftMargin = offsetX;
+            params.setMarginLeft(offsetX);
         }
-
         if (offsetY == Constants.CENTER) {
-            params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+            params.addRule(DependentLayout.LayoutConfig.VERTICAL_CENTER, DependentLayout.LayoutConfig.TRUE);
         } else if (offsetY < 0) {
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            params.bottomMargin = -offsetY;
+            params.addRule(DependentLayout.LayoutConfig.ALIGN_PARENT_BOTTOM, DependentLayout.LayoutConfig.TRUE);
+            params.setMarginBottom(-offsetY);
         } else {
-            params.topMargin = offsetY;
+            params.setMarginTop(offsetY);
         }
-
-        mGuideView.addView(view, params);
+        mGuideView.addComponent(view, params);
     }
 
     public boolean isShowing() {
-        return mParentView.indexOfChild(mGuideView) > 0;
+        return mParentView.getChildIndex(mGuideView) > 0;
     }
 
-    public boolean inRangeOfView(View view, MotionEvent ev) {
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
+    public boolean inRangeOfView(Component view, TouchEvent ev) {
+        int[] location = view.getLocationOnScreen();
         int x = location[0];
-        int y = location[1];
-        if (ev.getX() < x || ev.getX() > (x + view.getWidth()) || ev.getY() < y || ev.getY() > (y + view.getHeight())) {
-            return false;
-        }
-        return true;
+        int y = location[1] - 130;
+        MmiPoint point = ev.getPointerScreenPosition(0);
+        return point.getX() >= x && point.getX() <= (x + view.getWidth()) && point.getY() >= y && point.getY() <= (y + view.getHeight());
     }
 
     public static class Builder {
 
-        Activity activity;
+        AbilitySlice activity;
+
+        StackLayout componentContainer;
 
         List<HighlightArea> areas = new ArrayList<>();
+
         List<TipsView> views = new ArrayList<>();
+
         List<Message> messages = new ArrayList<>();
 
         Confirm confirm;
 
         boolean dismissAnyWhere = true;
+
         boolean performViewClick;
 
-        public Builder(Activity activity) {
+        public Builder(AbilitySlice activity) {
             this.activity = activity;
         }
 
-        /**
-         * 添加高亮区域
-         *
-         * @param view
-         * @param shape 高亮区域形状
-         * @return
-         */
-        public Builder addHightArea(View view, @HShape int shape) {
+        public Builder addHightArea(Component view, int shape) {
             HighlightArea area = new HighlightArea(view, shape);
             areas.add(area);
             return this;
@@ -286,42 +280,31 @@ public class EasyGuide {
             return this;
         }
 
-        /**
-         * 添加箭头指示的图片资源
-         *
-         * @param resId
-         * @param offX  X轴偏移 正数表示从布局的左侧往右偏移量，负数表示从布局的右侧往左偏移量。{@link Constants#CENTER}表示居中
-         * @param offY  Y轴偏移 正数表示从布局的上侧往下偏移量，负数表示从布局的下侧往上偏移量。{@link Constants#CENTER}表示居中
-         * @return
-         */
         public Builder addIndicator(int resId, int offX, int offY) {
-            ImageView ivIndicator = new ImageView(activity);
-            ivIndicator.setImageResource(resId);
+            Image ivIndicator = new Image(activity);
+            ivIndicator.setPixelMap(resId);
             views.add(new TipsView(ivIndicator, offX, offY));
             return this;
         }
 
-        public Builder addView(View view, int offX, int offY) {
+        public Builder addView(Component view, int offX, int offY) {
             views.add(new TipsView(view, offX, offY));
             return this;
         }
 
-        /**
-         * 添加任意的View
-         *
-         * @param view
-         * @param offX   X轴偏移 正数表示从布局的左侧往右偏移量，负数表示从布局的右侧往左偏移量。{@link Constants#CENTER}表示居中
-         * @param offY   Y轴偏移 正数表示从布局的上侧往下偏移量，负数表示从布局的下侧往上偏移量。{@link Constants#CENTER}表示居中
-         * @param params 参数
-         * @return
-         */
-        public Builder addView(View view, int offX, int offY, RelativeLayout.LayoutParams params) {
+
+        public Builder addParentView(StackLayout container) {
+            componentContainer = container;
+            return this;
+        }
+
+        public Builder addView(Component view, int offX, int offY, ohos.agp.components.DependentLayout.LayoutConfig params) {
             views.add(new TipsView(view, offX, offY, params));
             return this;
         }
 
         /**
-         * 添加提示信息，默认居中显示
+         * Add message
          *
          * @param message
          * @param textSize
@@ -333,7 +316,7 @@ public class EasyGuide {
         }
 
         /**
-         * 添加确定按钮，默认居中显示在提示信息下方
+         * Add positive button
          *
          * @param btnText
          * @param textSize
@@ -344,13 +327,13 @@ public class EasyGuide {
             return this;
         }
 
-        public Builder setPositiveButton(String btnText, int textSize, View.OnClickListener listener) {
+        public Builder setPositiveButton(String btnText, int textSize, ClickedListener listener) {
             this.confirm = new Confirm(btnText, textSize, listener);
             return this;
         }
 
         /**
-         * 是否点击任意区域消失。默认true
+         * dismiss
          *
          * @param dismissAnyWhere
          * @return
@@ -361,7 +344,7 @@ public class EasyGuide {
         }
 
         /**
-         * 若点击作用在高亮区域，是否执行高亮区域的点击事件
+         * perform view click
          *
          * @param performViewClick
          * @return
@@ -372,13 +355,18 @@ public class EasyGuide {
         }
 
         public EasyGuide build() {
-            return new EasyGuide(activity, areas, views, messages, confirm, dismissAnyWhere, performViewClick);
+            boolean[] dismissandperform = {dismissAnyWhere, performViewClick};
+            return new EasyGuide(activity, areas, views, messages, confirm, dismissandperform, componentContainer);
         }
     }
 
     public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
+        final float scale = DisplayManager.getInstance().getDefaultDisplay(context).get().getAttributes().scalDensity;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+    public static Color changeParamToColor(int color) {
+        return new Color(color);
     }
 
 }

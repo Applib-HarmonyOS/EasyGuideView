@@ -1,23 +1,29 @@
+/*
+ * Copyright (C) 2020-21 Application Library Engineering Group
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.yuyh.library.support;
 
-import android.support.annotation.IntDef;
 
-/**
- * 高亮区域形状
- *
- * @author yuyh.
- * @date 2016/12/24.
- */
-@IntDef({
-        HShape.CIRCLE,
-        HShape.RECTANGLE,
-        HShape.OVAL
-})
-public @interface HShape {
+public class HShape {
+    private HShape() {
+    }
 
-    int CIRCLE = 0;
+    public static final int CIRCLE = 0;
 
-    int RECTANGLE = 1;
+    public static final int RECTANGLE = 1;
 
-    int OVAL = 2;
+    public static final int OVAL = 2;
 }

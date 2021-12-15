@@ -1,105 +1,128 @@
+/*
+ * Copyright (C) 2020-21 Application Library Engineering Group
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.yuyh.library.view;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
-import android.graphics.Xfermode;
-import android.util.AttributeSet;
-import android.view.WindowManager;
-import android.widget.RelativeLayout;
-
+import ohos.agp.render.*;
+import ohos.agp.window.service.DisplayAttributes;
+import ohos.agp.window.service.DisplayManager;
+import ohos.app.Context;
 import com.yuyh.library.bean.HighlightArea;
 import com.yuyh.library.support.HShape;
-
 import java.util.List;
+import ohos.agp.components.DependentLayout;
+import ohos.agp.utils.RectFloat;
+import ohos.agp.utils.Color;
+import ohos.agp.components.Component.DrawTask;
+import ohos.agp.components.Component;
+import ohos.agp.components.Component.BindStateChangedListener;
+import ohos.agp.components.AttrSet;
+import ohos.hiviewdfx.HiLog;
+import ohos.hiviewdfx.HiLogLabel;
+import ohos.media.image.PixelMap;
+import ohos.media.image.common.PixelFormat;
+import ohos.media.image.common.Size;
 
 /**
- * @author yuyh.
- * @date 2016/12/24.
+ * @author yuyh
+ * @date 2016/12/24
  */
-public class EasyGuideView extends RelativeLayout {
+public class EasyGuideView extends DependentLayout implements DrawTask, BindStateChangedListener {
 
     private int mScreenWidth;
+
     private int mScreenHeight;
 
     private int mBgColor = 0xaa000000;
+
     private float mStrokeWidth;
+
     private Paint mPaint;
-    private Bitmap mBitmap;
-    private RectF mBitmapRect;
-    private RectF outRect = new RectF();
+
+    private PixelMap mBitmap;
+
+    private RectFloat mBitmapRect;
+
+    private RectFloat outRect = new RectFloat();
 
     private Canvas mCanvas;
+
     private List<HighlightArea> mHighlightList;
 
-    private Xfermode mode;
+    private BlendMode mode;
+
+    private boolean check = true;
+
+    private static final HiLogLabel HILOG_LABEL1 = new HiLogLabel(0, 0, "Jobin");
 
     public EasyGuideView(Context context) {
         this(context, null);
+        addDrawTask(this);
     }
 
-    public EasyGuideView(Context context, AttributeSet attrs) {
+    public EasyGuideView(Context context, AttrSet attrs) {
         this(context, attrs, 0);
+        addDrawTask(this);
     }
 
-    public EasyGuideView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-
-        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        Point point = new Point();
-        wm.getDefaultDisplay().getSize(point);
-        mScreenWidth = point.x;
-        mScreenHeight = point.y;
-
+    public EasyGuideView(Context context, AttrSet attrs, int defStyleAttr) {
+        super(context, attrs, "");
+        DisplayAttributes metrics = DisplayManager.getInstance().getDefaultDisplay(context).get().getAttributes();
+        mScreenWidth = metrics.width;
+        mScreenHeight = metrics.height;
         initView();
+        addDrawTask(this, DrawTask.BETWEEN_BACKGROUND_AND_CONTENT);
     }
 
     private void initView() {
-
         initPaint();
-
-        mBitmapRect = new RectF();
-        mode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
-
-        setWillNotDraw(false);
+        mBitmapRect = new RectFloat();
+        mode = BlendMode.CLEAR;
         setClickable(true);
     }
 
     private void initPaint() {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(mBgColor);
-        mPaint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.INNER));
+        Color hmosColor = EasyGuideView.changeParamToColor(mBgColor);
+        mPaint.setColor(hmosColor);
+        mPaint.setMaskFilter(new MaskFilter(10, MaskFilter.Blur.INNER));
     }
 
     private void initCanvas() {
-        if (mBitmapRect.width() > 0 && mBitmapRect.height() > 0) {
-            mBitmap = Bitmap.createBitmap((int) mBitmapRect.width(),
-                    (int) mBitmapRect.height(),
-                    Bitmap.Config.ARGB_8888);
+        if (mBitmapRect.getWidth() > 0 && mBitmapRect.getHeight() > 0) {
+            PixelMap.InitializationOptions in = new PixelMap.InitializationOptions();
+            in.pixelFormat = PixelFormat.ARGB_8888;
+            in.size = new Size((int) mBitmapRect.getWidth(), (int) mBitmapRect.getHeight());
+            mBitmap = PixelMap.create(in);
         } else {
-            mBitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
+            PixelMap.InitializationOptions in = new PixelMap.InitializationOptions();
+            in.pixelFormat = PixelFormat.ARGB_8888;
+            in.size = new Size(10,10);
+            mBitmap = PixelMap.create(in);
         }
-
-        // 矩形最大边距
-        mStrokeWidth = Math.max(Math.max(mBitmapRect.left, mBitmapRect.top),
-                Math.max(mScreenWidth - mBitmapRect.right, mScreenHeight - mBitmapRect.bottom));
-
+        mStrokeWidth = Math.max(Math.max(mBitmapRect.left, mBitmapRect.top), Math.max(mScreenWidth - mBitmapRect.right, mScreenHeight - mBitmapRect.bottom));
         outRect.left = mBitmapRect.left - mStrokeWidth / 2;
         outRect.top = mBitmapRect.top - mStrokeWidth / 2;
         outRect.right = mBitmapRect.right + mStrokeWidth / 2;
         outRect.bottom = mBitmapRect.bottom + mStrokeWidth / 2;
-
-        mCanvas = new Canvas(mBitmap);
-        mCanvas.drawColor(mBgColor);
+        mCanvas = new Canvas();
+        mCanvas.drawColor(mBgColor, ohos.agp.render.Canvas.PorterDuffMode.SRC_IN);
+        HiLog.error(HILOG_LABEL1, "init canvas");
     }
-
 
     /**
      * 设置高亮区域
@@ -110,29 +133,25 @@ public class EasyGuideView extends RelativeLayout {
         mHighlightList = list;
         if (list != null && !list.isEmpty()) {
             for (HighlightArea area : list) {
-                // 合并矩形框
-                mBitmapRect.union(area.getRectF());
+                mBitmapRect.fuse(area.getRectF());
             }
         }
-
         initCanvas();
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    public void onDraw(Component component, ohos.agp.render.Canvas canvas) {
+        canvas.restore();
+        HiLog.error(HILOG_LABEL1, "onDraw");
         if (mHighlightList != null && mHighlightList.size() > 0) {
-
-            mPaint.setXfermode(mode);
-            mPaint.setStyle(Paint.Style.FILL);
+            mPaint.setBlendMode(mode);
+            mPaint.setStyle(ohos.agp.render.Paint.Style.FILL_STYLE);
             for (HighlightArea area : mHighlightList) {
-                RectF rectF = area.getRectF();
-                rectF.offset(-mBitmapRect.left, -mBitmapRect.top);
-                switch (area.mShape) {
+                RectFloat rectF = area.getRectF();
+                rectF.shrink(-mBitmapRect.left, -mBitmapRect.top);
+                switch(area.getmShape()) {
                     case HShape.CIRCLE:
-                        mCanvas.drawCircle(rectF.centerX(), rectF.centerY(),
-                                Math.min(area.mHightlightView.getWidth(), area.mHightlightView.getHeight()) / 2,
-                                mPaint);
+                        mCanvas.drawCircle(rectF.getHorizontalCenter(), rectF.getVerticalCenter(), Math.min(area.getmHightlightView().getWidth(), area.getmHightlightView().getHeight()) / 2, mPaint);
                         break;
                     case HShape.RECTANGLE:
                         mCanvas.drawRect(rectF, mPaint);
@@ -142,31 +161,42 @@ public class EasyGuideView extends RelativeLayout {
                         break;
                 }
             }
-            canvas.drawBitmap(mBitmap, mBitmapRect.left, mBitmapRect.top, null);
-            //绘制剩余空间的矩形
-            mPaint.setXfermode(null);
-            mPaint.setStyle(Paint.Style.STROKE);
+            Paint paint = new Paint();
+            paint.setColor(Color.RED);
+            PixelMapHolder pixelMapHolder = EasyGuideView.changeParamToPixelMapHolder(mBitmap);
+            canvas.drawPixelMapHolder(pixelMapHolder, mBitmapRect.left, mBitmapRect.top, paint);
+            mPaint.setBlendMode(null);
+            mPaint.setStyle(ohos.agp.render.Paint.Style.STROKE_STYLE);
             mPaint.setStrokeWidth(mStrokeWidth + 0.1f);
-            canvas.drawRect(outRect, mPaint);
+            if (check) {
+                check = false;
+                canvas.drawRect(outRect, mPaint);
+            }
         }
     }
 
     public void recyclerBitmap() {
         if (mBitmap != null) {
-            mBitmap.recycle();
+            mBitmap.release();
             mBitmap = null;
         }
     }
 
     @Override
-    public boolean performClick() {
-        return super.performClick();
+    public void onComponentBoundToWindow(Component component) {
+        //Give required implementation
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
+    public void onComponentUnboundFromWindow(Component component) {
         recyclerBitmap();
+    }
+
+    public static Color changeParamToColor(int color) {
+        return new Color(color);
+    }
+
+    public static PixelMapHolder changeParamToPixelMapHolder(PixelMap pixelMap) {
+        return new PixelMapHolder(pixelMap);
     }
 }
