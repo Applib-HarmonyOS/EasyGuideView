@@ -16,9 +16,11 @@
 
 package com.yuyh.library.support;
 
-
-public class HShape {
-    private HShape() {
+/**
+ * Shape constants
+ */
+public class Hshape {
+    private Hshape() {
     }
 
     public static final int CIRCLE = 0;

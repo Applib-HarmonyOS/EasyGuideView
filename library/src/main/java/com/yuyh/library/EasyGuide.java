@@ -16,6 +16,24 @@
 
 package com.yuyh.library;
 
+import ohos.aafwk.ability.AbilitySlice;
+import ohos.agp.components.Component;
+import ohos.agp.components.ComponentContainer;
+import ohos.agp.components.Component.ClickedListener;
+import ohos.agp.components.DependentLayout;
+import ohos.agp.components.DirectionalLayout;
+import ohos.agp.components.Image;
+import ohos.agp.components.StackLayout;
+import ohos.agp.components.Text;
+import ohos.agp.components.element.ShapeElement;
+import ohos.agp.utils.Color;
+import ohos.agp.utils.LayoutAlignment;
+import ohos.agp.utils.TextAlignment;
+import ohos.agp.window.service.DisplayManager;
+import ohos.app.Context;
+import ohos.multimodalinput.event.MmiPoint;
+import ohos.multimodalinput.event.TouchEvent;
+
 import com.yuyh.library.bean.Confirm;
 import com.yuyh.library.bean.HighlightArea;
 import com.yuyh.library.bean.Message;
@@ -27,23 +45,6 @@ import com.yuyh.library.view.EasyGuideView;
 import java.util.ArrayList;
 import java.util.List;
 
-import ohos.agp.components.*;
-import ohos.agp.components.element.ShapeElement;
-import ohos.agp.utils.Color;
-import ohos.agp.utils.TextAlignment;
-import ohos.hiviewdfx.HiLog;
-import ohos.hiviewdfx.HiLogLabel;
-import ohos.multimodalinput.event.TouchEvent;
-import ohos.app.Context;
-import ohos.agp.components.Component.ClickedListener;
-import ohos.multimodalinput.event.MmiPoint;
-import ohos.agp.window.service.DisplayManager;
-import ohos.agp.utils.LayoutAlignment;
-import ohos.aafwk.ability.AbilitySlice;
-
-import static ohos.agp.components.ComponentContainer.LayoutConfig.MATCH_CONTENT;
-import static ohos.agp.components.ComponentContainer.LayoutConfig.MATCH_PARENT;
-
 /**
  * EasyGuide implemenation
  * <p>
@@ -53,9 +54,8 @@ import static ohos.agp.components.ComponentContainer.LayoutConfig.MATCH_PARENT;
  * @date 2016/12/24
  */
 public class EasyGuide {
-    private static final HiLogLabel HILOG_LABEL1 = new HiLogLabel(0, 0, "Jobin");
 
-    private AbilitySlice mActivity;
+    private AbilitySlice mAbilitySlice;
 
     private StackLayout mParentView;
 
@@ -75,8 +75,13 @@ public class EasyGuide {
 
     private OnStateChangedListener listener;
 
-    public EasyGuide(AbilitySlice activity, List<HighlightArea> areas, List<TipsView> indicators, List<Message> messages, Confirm confirm, boolean[] dismissandperformclick, StackLayout componentContainer) {
-        this.mActivity = activity;
+    /**
+     * Constructor for creating EasyGuide
+     */
+    public EasyGuide(AbilitySlice activity, List<HighlightArea> areas, List<TipsView> indicators,
+                     List<Message> messages, Confirm confirm, boolean[] dismissandperformclick,
+                     StackLayout componentContainer) {
+        this.mAbilitySlice = activity;
         this.mAreas = areas;
         this.mIndicators = indicators;
         this.mMessages = messages;
@@ -100,57 +105,62 @@ public class EasyGuide {
      * Show dialog
      */
     public void show() {
-        mGuideView = new EasyGuideView(mActivity);
+        mGuideView = new EasyGuideView(mAbilitySlice);
         mGuideView.setHightLightAreas(mAreas);
-        DirectionalLayout mTipView = new DirectionalLayout(mActivity);
-        mTipView.setAlignment(LayoutAlignment.HORIZONTAL_CENTER);
-        mTipView.setLayoutConfig(new DirectionalLayout.LayoutConfig(MATCH_PARENT, MATCH_CONTENT));
-        mTipView.setOrientation(DirectionalLayout.VERTICAL);
+        DirectionalLayout tipView = new DirectionalLayout(mAbilitySlice);
+        tipView.setAlignment(LayoutAlignment.HORIZONTAL_CENTER);
+        tipView.setLayoutConfig(new DirectionalLayout.LayoutConfig(
+                ComponentContainer.LayoutConfig.MATCH_PARENT, ComponentContainer.LayoutConfig.MATCH_CONTENT));
+        tipView.setOrientation(DirectionalLayout.VERTICAL);
         if (mIndicators != null) {
             for (TipsView tipsView : mIndicators) {
                 addView(tipsView.getView(), tipsView.getOffsetX(), tipsView.getOffsetY(), tipsView.getParams());
             }
         }
         if (mMessages != null) {
-            int padding = dip2px(mActivity, 5);
+            int padding = dip2px(mAbilitySlice, 5);
             for (Message message : mMessages) {
-                Text tvMsg = new Text(mActivity);
-                tvMsg.setLayoutConfig(new ComponentContainer.LayoutConfig(MATCH_PARENT, MATCH_CONTENT));
+                Text tvMsg = new Text(mAbilitySlice);
+                tvMsg.setLayoutConfig(new ComponentContainer.LayoutConfig(
+                        ComponentContainer.LayoutConfig.MATCH_PARENT, ComponentContainer.LayoutConfig.MATCH_CONTENT));
                 tvMsg.setPadding(padding, padding, padding, padding);
                 tvMsg.setTextAlignment(TextAlignment.CENTER);
                 tvMsg.setText(message.getMessagetext());
                 Color hmosColor = EasyGuide.changeParamToColor(ohos.agp.utils.Color.WHITE.getValue());
                 tvMsg.setTextColor(hmosColor);
                 tvMsg.setTextSize(50);
-                mTipView.addComponent(tvMsg);
+                tipView.addComponent(tvMsg);
             }
         }
         if (mConfirm != null) {
-            Text tvConfirm = new Text(mActivity);
+            Text tvConfirm = new Text(mAbilitySlice);
             tvConfirm.setTextAlignment(TextAlignment.CENTER);
             tvConfirm.setText(mConfirm.getText());
             Color hmosColor1 = EasyGuide.changeParamToColor(ohos.agp.utils.Color.WHITE.getValue());
             tvConfirm.setTextColor(hmosColor1);
             tvConfirm.setTextSize(50);
-            tvConfirm.setBackground(new ShapeElement(mActivity.getContext(), ResourceTable.Graphic_btn_selector));
-            ohos.agp.components.DirectionalLayout.LayoutConfig params = new DirectionalLayout.LayoutConfig(MATCH_CONTENT, MATCH_CONTENT);
-            params.setMarginTop(dip2px(mActivity, 10));
+            tvConfirm.setBackground(new ShapeElement(mAbilitySlice.getContext(), ResourceTable.Graphic_btn_selector));
+            ohos.agp.components.DirectionalLayout.LayoutConfig params = new DirectionalLayout.LayoutConfig(
+                    ComponentContainer.LayoutConfig.MATCH_CONTENT, ComponentContainer.LayoutConfig.MATCH_CONTENT);
+            params.setMarginTop(dip2px(mAbilitySlice, 10));
             tvConfirm.setLayoutConfig(params);
-            int lr = dip2px(mActivity, 8);
-            int tb = dip2px(mActivity, 5);
+            int lr = dip2px(mAbilitySlice, 8);
+            int tb = dip2px(mAbilitySlice, 5);
             tvConfirm.setPadding(lr, tb, lr, tb);
-            tvConfirm.setClickedListener(mConfirm.getListener() != null ? mConfirm.getListener() : new Component.ClickedListener() {
+            tvConfirm.setClickedListener(mConfirm.getListener() != null ?
+                    mConfirm.getListener() : new Component.ClickedListener() {
                 @Override
                 public void onClick(Component v) {
                     dismiss();
                 }
             });
-            mTipView.addComponent(tvConfirm);
+            tipView.addComponent(tvConfirm);
         }
-        addView(mTipView, Constants.CENTER, Constants.CENTER, new DependentLayout.LayoutConfig(MATCH_PARENT, MATCH_CONTENT));
-        mParentView.addComponent(mGuideView, new StackLayout.LayoutConfig(MATCH_PARENT, MATCH_PARENT));
+        addView(tipView, Constants.CENTER, Constants.CENTER, new DependentLayout.LayoutConfig(
+                ComponentContainer.LayoutConfig.MATCH_PARENT, ComponentContainer.LayoutConfig.MATCH_CONTENT));
+        mParentView.addComponent(mGuideView, new StackLayout.LayoutConfig(
+                ComponentContainer.LayoutConfig.MATCH_PARENT, ComponentContainer.LayoutConfig.MATCH_PARENT));
         addListener();
-        HiLog.error(HILOG_LABEL1, "Add View");
     }
 
     private void addListener() {
@@ -182,7 +192,7 @@ public class EasyGuide {
 
     private boolean handleTouchPointUpEvent(TouchEvent event) {
         for (HighlightArea area : mAreas) {
-            final Component view = area.getmHightlightView();
+            final Component view = area.getHightlightView();
             if (view != null && inRangeOfView(view, event)) {
                 dismiss();
                 if (listener != null) {
@@ -212,9 +222,10 @@ public class EasyGuide {
         }
     }
 
-    private void addView(Component view, int offsetX, int offsetY, ohos.agp.components.DependentLayout.LayoutConfig params) {
+    private void addView(Component view, int offsetX, int offsetY, DependentLayout.LayoutConfig params) {
         if (params == null) {
-            params = new DependentLayout.LayoutConfig(MATCH_CONTENT, MATCH_CONTENT);
+            params = new DependentLayout.LayoutConfig(
+                    ComponentContainer.LayoutConfig.MATCH_CONTENT, ComponentContainer.LayoutConfig.MATCH_CONTENT);
         }
         if (offsetX == Constants.CENTER) {
             params.addRule(DependentLayout.LayoutConfig.HORIZONTAL_CENTER, DependentLayout.LayoutConfig.TRUE);
@@ -235,16 +246,20 @@ public class EasyGuide {
         mGuideView.addComponent(view, params);
     }
 
+    /**
+     * Is dialog is showing or not
+     */
     public boolean isShowing() {
         return mParentView.getChildIndex(mGuideView) > 0;
     }
 
-    public boolean inRangeOfView(Component view, TouchEvent ev) {
+    private boolean inRangeOfView(Component view, TouchEvent ev) {
         int[] location = view.getLocationOnScreen();
         int x = location[0];
         int y = location[1] - 130;
         MmiPoint point = ev.getPointerScreenPosition(0);
-        return point.getX() >= x && point.getX() <= (x + view.getWidth()) && point.getY() >= y && point.getY() <= (y + view.getHeight());
+        return point.getX() >= x && point.getX() <= (x + view.getWidth()) &&
+                point.getY() >= y && point.getY() <= (y + view.getHeight());
     }
 
     public static class Builder {
@@ -275,20 +290,10 @@ public class EasyGuide {
             return this;
         }
 
-        public Builder addHightLightArea(HighlightArea area) {
-            areas.add(area);
-            return this;
-        }
-
         public Builder addIndicator(int resId, int offX, int offY) {
             Image ivIndicator = new Image(activity);
             ivIndicator.setPixelMap(resId);
             views.add(new TipsView(ivIndicator, offX, offY));
-            return this;
-        }
-
-        public Builder addView(Component view, int offX, int offY) {
-            views.add(new TipsView(view, offX, offY));
             return this;
         }
 
@@ -298,7 +303,7 @@ public class EasyGuide {
             return this;
         }
 
-        public Builder addView(Component view, int offX, int offY, ohos.agp.components.DependentLayout.LayoutConfig params) {
+        public Builder addView(Component view, int offX, int offY, DependentLayout.LayoutConfig params) {
             views.add(new TipsView(view, offX, offY, params));
             return this;
         }

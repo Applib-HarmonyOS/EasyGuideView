@@ -30,15 +30,13 @@ public class Confirm {
 
     private ClickedListener listener;
 
-    public Confirm(String text) {
-        this.setText(text);
-    }
-
     public Confirm(String text, int textSize) {
         this.setText(text);
         this.setTextSize(textSize);
     }
-
+    /**
+     * Constructor for creating Confirm
+     */
     public Confirm(String text, int textSize, ClickedListener listener) {
         this.setText(text);
         this.setTextSize(textSize);

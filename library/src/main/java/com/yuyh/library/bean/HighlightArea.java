@@ -16,8 +16,8 @@
 
 package com.yuyh.library.bean;
 
-import ohos.agp.utils.RectFloat;
 import ohos.agp.components.Component;
+import ohos.agp.utils.RectFloat;
 
 /**
  * Highlighted area display
@@ -32,35 +32,38 @@ public class HighlightArea {
     private int mShape;
 
     public HighlightArea(Component view, int shape) {
-        this.setmHightlightView(view);
-        this.setmShape(shape);
+        this.setHightlightView(view);
+        this.setShape(shape);
     }
 
+    /**
+     * Create a RectFloat object
+     */
     public RectFloat getRectF() {
         RectFloat rectF = new RectFloat();
-        if (getmHightlightView() != null) {
-            int[] location = getmHightlightView().getLocationOnScreen();
+        if (getHightlightView() != null) {
+            int[] location = getHightlightView().getLocationOnScreen();
             rectF.left = location[0];
             rectF.top = location[1] - 130;
-            rectF.right = location[0] + getmHightlightView().getWidth();
-            rectF.bottom = location[1] - 130 + getmHightlightView().getHeight();
+            rectF.right = location[0] + getHightlightView().getWidth();
+            rectF.bottom = location[1] - 130 + getHightlightView().getHeight();
         }
         return rectF;
     }
 
-    public Component getmHightlightView() {
+    public Component getHightlightView() {
         return mHightlightView;
     }
 
-    public void setmHightlightView(Component mHightlightView) {
-        this.mHightlightView = mHightlightView;
+    public void setHightlightView(Component hightlightView) {
+        this.mHightlightView = hightlightView;
     }
 
-    public int getmShape() {
+    public int getShape() {
         return mShape;
     }
 
-    public void setmShape(int mShape) {
-        this.mShape = mShape;
+    public void setShape(int shape) {
+        this.mShape = shape;
     }
 }

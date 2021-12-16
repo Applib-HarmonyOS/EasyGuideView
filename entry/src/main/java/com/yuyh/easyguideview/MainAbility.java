@@ -16,9 +16,9 @@
 
 package com.yuyh.easyguideview;
 
-import com.yuyh.easyguideview.slice.MainAbilitySlice;
 import ohos.aafwk.ability.Ability;
 import ohos.aafwk.content.Intent;
+import com.yuyh.easyguideview.slice.MainAbilitySlice;
 
 /**
  * Main ability that routes to the required slice.

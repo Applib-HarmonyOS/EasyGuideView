@@ -16,25 +16,28 @@
 
 package com.yuyh.library.view;
 
-import ohos.agp.render.*;
-import ohos.agp.window.service.DisplayAttributes;
-import ohos.agp.window.service.DisplayManager;
-import ohos.app.Context;
-import com.yuyh.library.bean.HighlightArea;
-import com.yuyh.library.support.HShape;
-import java.util.List;
-import ohos.agp.components.DependentLayout;
-import ohos.agp.utils.RectFloat;
-import ohos.agp.utils.Color;
+import ohos.agp.components.AttrSet;
 import ohos.agp.components.Component.DrawTask;
 import ohos.agp.components.Component;
 import ohos.agp.components.Component.BindStateChangedListener;
-import ohos.agp.components.AttrSet;
-import ohos.hiviewdfx.HiLog;
-import ohos.hiviewdfx.HiLogLabel;
+import ohos.agp.components.DependentLayout;
+import ohos.agp.render.BlendMode;
+import ohos.agp.render.Canvas;
+import ohos.agp.render.MaskFilter;
+import ohos.agp.render.Paint;
+import ohos.agp.render.PixelMapHolder;
+import ohos.agp.utils.Color;
+import ohos.agp.utils.RectFloat;
+import ohos.agp.window.service.DisplayAttributes;
+import ohos.agp.window.service.DisplayManager;
+import ohos.app.Context;
 import ohos.media.image.PixelMap;
 import ohos.media.image.common.PixelFormat;
 import ohos.media.image.common.Size;
+
+import com.yuyh.library.bean.HighlightArea;
+import com.yuyh.library.support.Hshape;
+import java.util.List;
 
 /**
  * @author yuyh
@@ -66,8 +69,6 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
 
     private boolean check = true;
 
-    private static final HiLogLabel HILOG_LABEL1 = new HiLogLabel(0, 0, "Jobin");
-
     public EasyGuideView(Context context) {
         this(context, null);
         addDrawTask(this);
@@ -75,9 +76,12 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
 
     public EasyGuideView(Context context, AttrSet attrs) {
         this(context, attrs, 0);
-        addDrawTask(this);
+        addDrawTask(this, DrawTask.BETWEEN_BACKGROUND_AND_CONTENT);
     }
 
+    /**
+     * Constructor for creating EasyGuideView
+     */
     public EasyGuideView(Context context, AttrSet attrs, int defStyleAttr) {
         super(context, attrs, "");
         DisplayAttributes metrics = DisplayManager.getInstance().getDefaultDisplay(context).get().getAttributes();
@@ -111,17 +115,17 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
         } else {
             PixelMap.InitializationOptions in = new PixelMap.InitializationOptions();
             in.pixelFormat = PixelFormat.ARGB_8888;
-            in.size = new Size(10,10);
+            in.size = new Size(10, 10);
             mBitmap = PixelMap.create(in);
         }
-        mStrokeWidth = Math.max(Math.max(mBitmapRect.left, mBitmapRect.top), Math.max(mScreenWidth - mBitmapRect.right, mScreenHeight - mBitmapRect.bottom));
+        mStrokeWidth = Math.max(Math.max(mBitmapRect.left, mBitmapRect.top),
+                Math.max(mScreenWidth - mBitmapRect.right, mScreenHeight - mBitmapRect.bottom));
         outRect.left = mBitmapRect.left - mStrokeWidth / 2;
         outRect.top = mBitmapRect.top - mStrokeWidth / 2;
         outRect.right = mBitmapRect.right + mStrokeWidth / 2;
         outRect.bottom = mBitmapRect.bottom + mStrokeWidth / 2;
         mCanvas = new Canvas();
         mCanvas.drawColor(mBgColor, ohos.agp.render.Canvas.PorterDuffMode.SRC_IN);
-        HiLog.error(HILOG_LABEL1, "init canvas");
     }
 
     /**
@@ -141,23 +145,24 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
 
     @Override
     public void onDraw(Component component, ohos.agp.render.Canvas canvas) {
-        canvas.restore();
-        HiLog.error(HILOG_LABEL1, "onDraw");
         if (mHighlightList != null && mHighlightList.size() > 0) {
             mPaint.setBlendMode(mode);
             mPaint.setStyle(ohos.agp.render.Paint.Style.FILL_STYLE);
             for (HighlightArea area : mHighlightList) {
                 RectFloat rectF = area.getRectF();
                 rectF.shrink(-mBitmapRect.left, -mBitmapRect.top);
-                switch(area.getmShape()) {
-                    case HShape.CIRCLE:
-                        mCanvas.drawCircle(rectF.getHorizontalCenter(), rectF.getVerticalCenter(), Math.min(area.getmHightlightView().getWidth(), area.getmHightlightView().getHeight()) / 2, mPaint);
+                switch (area.getShape()) {
+                    case Hshape.CIRCLE:
+                        mCanvas.drawCircle(rectF.getHorizontalCenter(), rectF.getVerticalCenter(),
+                                Math.min(area.getHightlightView().getWidth(), area.getHightlightView().getHeight()) / 2, mPaint);
                         break;
-                    case HShape.RECTANGLE:
+                    case Hshape.RECTANGLE:
                         mCanvas.drawRect(rectF, mPaint);
                         break;
-                    case HShape.OVAL:
+                    case Hshape.OVAL:
                         mCanvas.drawOval(rectF, mPaint);
+                        break;
+                    default:
                         break;
                 }
             }

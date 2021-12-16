@@ -16,14 +16,20 @@
 
 package com.yuyh.easyguideview.slice;
 
-import com.yuyh.easyguideview.ResourceTable;
-import com.yuyh.library.EasyGuide;
-import com.yuyh.library.support.HShape;
-import com.yuyh.library.support.OnStateChangedListener;
 import ohos.aafwk.ability.AbilitySlice;
 import ohos.aafwk.content.Intent;
-import ohos.agp.components.*;
+import ohos.agp.components.Button;
+import ohos.agp.components.Component;
+import ohos.agp.components.ComponentContainer;
+import ohos.agp.components.DependentLayout;
+import ohos.agp.components.Image;
+import ohos.agp.components.LayoutScatter;
+import ohos.agp.components.StackLayout;
 import ohos.agp.window.service.WindowManager;
+import com.yuyh.easyguideview.ResourceTable;
+import com.yuyh.library.EasyGuide;
+import com.yuyh.library.support.Hshape;
+import com.yuyh.library.support.OnStateChangedListener;
 
 /**
  * Sample app to test the EasyGuideView library functionality.
@@ -63,14 +69,13 @@ public class MainAbilitySlice extends AbilitySlice {
         super.onForeground(intent);
     }
 
-    public void btnShowFirst(Component view) {
+    private void btnShowFirst(Component view) {
         int[] loc = view.getLocationOnScreen();
-
-        if (easyGuide != null && easyGuide.isShowing())
+        if (easyGuide != null && easyGuide.isShowing()) {
             easyGuide.dismiss();
-
+        }
         easyGuide = new EasyGuide.Builder(MainAbilitySlice.this)
-                .addHightArea(view, HShape.RECTANGLE)
+                .addHightArea(view, Hshape.RECTANGLE)
                 .addParentView(mParentView)
                 .addIndicator(ResourceTable.Media_arrow_right_top, loc[0], loc[1] - 130 + view.getHeight())
                 .addMessage("Menu Content", 14)
@@ -86,15 +91,17 @@ public class MainAbilitySlice extends AbilitySlice {
         easyGuide.show();
     }
 
-    public void btnShowSecond(Component view) {
+    private void btnShowSecond(Component view) {
         int[] loc = view.getLocationOnScreen();
         Component tipsView = createTipsView();
-        if (easyGuide != null && easyGuide.isShowing())
+        if (easyGuide != null && easyGuide.isShowing()) {
             easyGuide.dismiss();
+        }
         easyGuide = new EasyGuide.Builder(MainAbilitySlice.this)
-                .addHightArea(view, HShape.RECTANGLE)
+                .addHightArea(view, Hshape.RECTANGLE)
                 .addParentView(mParentView)
-                .addView(tipsView, 0, loc[1] + view.getHeight() - 130, new DependentLayout.LayoutConfig(ComponentContainer.LayoutConfig.MATCH_PARENT, ComponentContainer.LayoutConfig.MATCH_CONTENT))
+                .addView(tipsView, 0, loc[1] + view.getHeight() - 130, new DependentLayout.LayoutConfig(
+                        ComponentContainer.LayoutConfig.MATCH_PARENT, ComponentContainer.LayoutConfig.MATCH_CONTENT))
                 .dismissAnyWhere(false)
                 .build();
         easyGuide.setOnStateChangedListener(new OnStateChangedListener() {
