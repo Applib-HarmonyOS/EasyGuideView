@@ -42,11 +42,11 @@ public class TipsView {
     }
 
     /**
-     * Constructor for creating Tipview
+     * Constructor for creating Tipview.
      *
-     * @param view
-     * @param offsetX
-     * @param offsetY
+     * @param view view
+     * @param offsetX offsetX
+     * @param offsetY offsetY
      */
     public TipsView(Component view, int offsetX, int offsetY) {
         this.setView(view);
@@ -55,12 +55,12 @@ public class TipsView {
     }
 
     /**
-     * Constructor for creating Tipview with layout params
+     * Constructor for creating Tipview with layout params.
      *
-     * @param view
-     * @param offsetX
-     * @param offsetY
-     * @param params
+     * @param view view
+     * @param offsetX offsetX
+     * @param offsetY offsetY
+     * @param params params
      */
     public TipsView(Component view, int offsetX, int offsetY, LayoutConfig params) {
         this.setView(view);

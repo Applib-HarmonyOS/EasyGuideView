@@ -36,11 +36,11 @@ public class Confirm {
     }
 
     /**
-     * Constructor for creating Confirm
+     * Constructor for creating Confirm.
      *
-     * @param text
-     * @param textSize
-     * @param listener
+     * @param text text
+     * @param textSize textSize
+     * @param listener listener
      */
     public Confirm(String text, int textSize, ClickedListener listener) {
         this.setText(text);

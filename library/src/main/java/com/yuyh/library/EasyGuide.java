@@ -76,15 +76,15 @@ public class EasyGuide {
     private OnStateChangedListener listener;
 
     /**
-     * Constructor for creating EasyGuide
+     * Constructor for creating EasyGuide.
      *
-     * @param abilitySlice
-     * @param areas
-     * @param indicators
-     * @param messages
-     * @param confirm
-     * @param dismissandperformclick
-     * @param componentContainer
+     * @param abilitySlice abilitySlice
+     * @param areas areas
+     * @param indicators indicators
+     * @param messages messages
+     * @param confirm confirm
+     * @param dismissandperformclick dismissandperformclick
+     * @param componentContainer componentContainer
      */
     public EasyGuide(AbilitySlice abilitySlice, List<HighlightArea> areas, List<TipsView> indicators,
                      List<Message> messages, Confirm confirm, boolean[] dismissandperformclick,
@@ -103,7 +103,7 @@ public class EasyGuide {
     /**
      * Add the listener
      *
-     * @param listener
+     * @param listener listener
      */
     public void setOnStateChangedListener(OnStateChangedListener listener) {
         this.listener = listener;
@@ -294,6 +294,9 @@ public class EasyGuide {
 
         /**
          * Add Highlight area.
+         *
+         * @param view view
+         * @param shape shape
          */
         public Builder addHightArea(Component view, int shape) {
             HighlightArea area = new HighlightArea(view, shape);
@@ -303,6 +306,10 @@ public class EasyGuide {
 
         /**
          * Add indicator.
+         *
+         * @param resId resId
+         * @param offX offX
+         * @param offY offY
          */
         public Builder addIndicator(int resId, int offX, int offY) {
             Image ivIndicator = new Image(activity);
@@ -313,6 +320,8 @@ public class EasyGuide {
 
         /**
          * Add parent view.
+         *
+         * @param container container
          */
         public Builder addParentView(StackLayout container) {
             componentContainer = container;
@@ -321,6 +330,11 @@ public class EasyGuide {
 
         /**
          * Add view.
+         *
+         * @param view view
+         * @param offX offX
+         * @param offY offY
+         * @param params params
          */
         public Builder addView(Component view, int offX, int offY, DependentLayout.LayoutConfig params) {
             views.add(new TipsView(view, offX, offY, params));
@@ -329,6 +343,9 @@ public class EasyGuide {
 
         /**
          * Add message.
+         *
+         * @param message message
+         * @param textSize textSize
          */
         public Builder addMessage(String message, int textSize) {
             messages.add(new Message(message, textSize));
@@ -337,6 +354,9 @@ public class EasyGuide {
 
         /**
          * Add positive button.
+         *
+         * @param btnText btnText
+         * @param textSize textSize
          */
         public Builder setPositiveButton(String btnText, int textSize) {
             this.confirm = new Confirm(btnText, textSize);
@@ -345,6 +365,10 @@ public class EasyGuide {
 
         /**
          * Add positive button with listener.
+         *
+         * @param btnText btnText
+         * @param textSize textSize
+         * @param listener listener
          */
         public Builder setPositiveButton(String btnText, int textSize, ClickedListener listener) {
             this.confirm = new Confirm(btnText, textSize, listener);
@@ -353,6 +377,8 @@ public class EasyGuide {
 
         /**
          * dismiss any where.
+         *
+         * @param dismissAnyWhere dismissAnyWhere
          */
         public Builder dismissAnyWhere(boolean dismissAnyWhere) {
             this.dismissAnyWhere = dismissAnyWhere;
@@ -361,6 +387,8 @@ public class EasyGuide {
 
         /**
          * perform view click.
+         *
+         * @param performViewClick performViewClick
          */
         public Builder performViewClick(boolean performViewClick) {
             this.performViewClick = performViewClick;

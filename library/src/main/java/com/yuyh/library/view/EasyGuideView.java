@@ -80,11 +80,11 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
     }
 
     /**
-     * Constructor for creating EasyGuideView
+     * Constructor for creating EasyGuideView.
      *
-     * @param context
-     * @param attrs
-     * @param defStyleAttr
+     * @param context context
+     * @param attrs attrs
+     * @param defStyleAttr defStyleAttr
      */
     public EasyGuideView(Context context, AttrSet attrs, int defStyleAttr) {
         super(context, attrs, "");
