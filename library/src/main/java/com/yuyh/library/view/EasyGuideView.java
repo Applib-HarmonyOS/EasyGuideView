@@ -17,9 +17,9 @@
 package com.yuyh.library.view;
 
 import ohos.agp.components.AttrSet;
-import ohos.agp.components.Component.DrawTask;
 import ohos.agp.components.Component;
 import ohos.agp.components.Component.BindStateChangedListener;
+import ohos.agp.components.Component.DrawTask;
 import ohos.agp.components.DependentLayout;
 import ohos.agp.render.BlendMode;
 import ohos.agp.render.Canvas;
@@ -81,6 +81,10 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
 
     /**
      * Constructor for creating EasyGuideView
+     *
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
      */
     public EasyGuideView(Context context, AttrSet attrs, int defStyleAttr) {
         super(context, attrs, "");
@@ -154,7 +158,9 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
                 switch (area.getShape()) {
                     case Hshape.CIRCLE:
                         mCanvas.drawCircle(rectF.getHorizontalCenter(), rectF.getVerticalCenter(),
-                                Math.min(area.getHightlightView().getWidth(), area.getHightlightView().getHeight()) / 2, mPaint);
+                                Math.min(area.getHightlightView().getWidth(),
+                                        area.getHightlightView().getHeight()) / 2,
+                                mPaint);
                         break;
                     case Hshape.RECTANGLE:
                         mCanvas.drawRect(rectF, mPaint);

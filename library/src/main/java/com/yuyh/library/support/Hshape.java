@@ -17,7 +17,7 @@
 package com.yuyh.library.support;
 
 /**
- * Shape constants
+ * Shape constants.
  */
 public class Hshape {
     private Hshape() {

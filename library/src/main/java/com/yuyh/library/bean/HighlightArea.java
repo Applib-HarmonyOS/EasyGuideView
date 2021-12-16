@@ -37,7 +37,7 @@ public class HighlightArea {
     }
 
     /**
-     * Create a RectFloat object
+     * Create a RectFloat object.
      */
     public RectFloat getRectF() {
         RectFloat rectF = new RectFloat();

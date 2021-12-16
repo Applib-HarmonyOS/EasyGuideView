@@ -18,8 +18,8 @@ package com.yuyh.library;
 
 import ohos.aafwk.ability.AbilitySlice;
 import ohos.agp.components.Component;
-import ohos.agp.components.ComponentContainer;
 import ohos.agp.components.Component.ClickedListener;
+import ohos.agp.components.ComponentContainer;
 import ohos.agp.components.DependentLayout;
 import ohos.agp.components.DirectionalLayout;
 import ohos.agp.components.Image;
@@ -77,11 +77,19 @@ public class EasyGuide {
 
     /**
      * Constructor for creating EasyGuide
+     *
+     * @param abilitySlice
+     * @param areas
+     * @param indicators
+     * @param messages
+     * @param confirm
+     * @param dismissandperformclick
+     * @param componentContainer
      */
-    public EasyGuide(AbilitySlice activity, List<HighlightArea> areas, List<TipsView> indicators,
+    public EasyGuide(AbilitySlice abilitySlice, List<HighlightArea> areas, List<TipsView> indicators,
                      List<Message> messages, Confirm confirm, boolean[] dismissandperformclick,
                      StackLayout componentContainer) {
-        this.mAbilitySlice = activity;
+        this.mAbilitySlice = abilitySlice;
         this.mAreas = areas;
         this.mIndicators = indicators;
         this.mMessages = messages;
@@ -102,7 +110,7 @@ public class EasyGuide {
     }
 
     /**
-     * Show dialog
+     * Show dialog.
      */
     public void show() {
         mGuideView = new EasyGuideView(mAbilitySlice);
@@ -147,8 +155,8 @@ public class EasyGuide {
             int lr = dip2px(mAbilitySlice, 8);
             int tb = dip2px(mAbilitySlice, 5);
             tvConfirm.setPadding(lr, tb, lr, tb);
-            tvConfirm.setClickedListener(mConfirm.getListener() != null ?
-                    mConfirm.getListener() : new Component.ClickedListener() {
+            tvConfirm.setClickedListener(mConfirm.getListener() != null
+                    ? mConfirm.getListener() : new Component.ClickedListener() {
                 @Override
                 public void onClick(Component v) {
                     dismiss();
@@ -210,7 +218,7 @@ public class EasyGuide {
 
 
     /**
-     * Dismiss the dialog
+     * Dismiss the dialog.
      */
     public void dismiss() {
         mGuideView.recyclerBitmap();
@@ -247,7 +255,7 @@ public class EasyGuide {
     }
 
     /**
-     * Is dialog is showing or not
+     * Is dialog is showing or not.
      */
     public boolean isShowing() {
         return mParentView.getChildIndex(mGuideView) > 0;
@@ -258,8 +266,8 @@ public class EasyGuide {
         int x = location[0];
         int y = location[1] - 130;
         MmiPoint point = ev.getPointerScreenPosition(0);
-        return point.getX() >= x && point.getX() <= (x + view.getWidth()) &&
-                point.getY() >= y && point.getY() <= (y + view.getHeight());
+        return point.getX() >= x && point.getX() <= (x + view.getWidth())
+                && point.getY() >= y && point.getY() <= (y + view.getHeight());
     }
 
     public static class Builder {
@@ -284,12 +292,18 @@ public class EasyGuide {
             this.activity = activity;
         }
 
+        /**
+         * Add Highlight area.
+         */
         public Builder addHightArea(Component view, int shape) {
             HighlightArea area = new HighlightArea(view, shape);
             areas.add(area);
             return this;
         }
 
+        /**
+         * Add indicator.
+         */
         public Builder addIndicator(int resId, int offX, int offY) {
             Image ivIndicator = new Image(activity);
             ivIndicator.setPixelMap(resId);
@@ -297,23 +311,24 @@ public class EasyGuide {
             return this;
         }
 
-
+        /**
+         * Add parent view.
+         */
         public Builder addParentView(StackLayout container) {
             componentContainer = container;
             return this;
         }
 
+        /**
+         * Add view.
+         */
         public Builder addView(Component view, int offX, int offY, DependentLayout.LayoutConfig params) {
             views.add(new TipsView(view, offX, offY, params));
             return this;
         }
 
         /**
-         * Add message
-         *
-         * @param message
-         * @param textSize
-         * @return
+         * Add message.
          */
         public Builder addMessage(String message, int textSize) {
             messages.add(new Message(message, textSize));
@@ -321,27 +336,23 @@ public class EasyGuide {
         }
 
         /**
-         * Add positive button
-         *
-         * @param btnText
-         * @param textSize
-         * @return
+         * Add positive button.
          */
         public Builder setPositiveButton(String btnText, int textSize) {
             this.confirm = new Confirm(btnText, textSize);
             return this;
         }
 
+        /**
+         * Add positive button with listener.
+         */
         public Builder setPositiveButton(String btnText, int textSize, ClickedListener listener) {
             this.confirm = new Confirm(btnText, textSize, listener);
             return this;
         }
 
         /**
-         * dismiss
-         *
-         * @param dismissAnyWhere
-         * @return
+         * dismiss any where.
          */
         public Builder dismissAnyWhere(boolean dismissAnyWhere) {
             this.dismissAnyWhere = dismissAnyWhere;
@@ -349,16 +360,16 @@ public class EasyGuide {
         }
 
         /**
-         * perform view click
-         *
-         * @param performViewClick
-         * @return
+         * perform view click.
          */
         public Builder performViewClick(boolean performViewClick) {
             this.performViewClick = performViewClick;
             return this;
         }
 
+        /**
+         * build method for object creation.
+         */
         public EasyGuide build() {
             boolean[] dismissandperform = {dismissAnyWhere, performViewClick};
             return new EasyGuide(activity, areas, views, messages, confirm, dismissandperform, componentContainer);

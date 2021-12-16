@@ -34,8 +34,13 @@ public class Confirm {
         this.setText(text);
         this.setTextSize(textSize);
     }
+
     /**
      * Constructor for creating Confirm
+     *
+     * @param text
+     * @param textSize
+     * @param listener
      */
     public Confirm(String text, int textSize, ClickedListener listener) {
         this.setText(text);
