@@ -1,6 +1,8 @@
 package com.yuyh.library.constant;
 
 /**
+ * Constant class.
+ *
  * @author yuyh
  * @date 2016/12/24
  */

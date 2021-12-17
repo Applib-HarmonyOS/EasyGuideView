@@ -18,12 +18,13 @@ import ohos.app.Context;
 import ohos.media.image.PixelMap;
 import ohos.media.image.common.PixelFormat;
 import ohos.media.image.common.Size;
-
 import com.yuyh.library.bean.HighlightArea;
 import com.yuyh.library.support.Hshape;
 import java.util.List;
 
 /**
+ * Easyguideview layout class.
+ *
  * @author yuyh
  * @date 2016/12/24
  */
@@ -117,9 +118,9 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
     }
 
     /**
-     * 设置高亮区域
+     * set highlight area.
      *
-     * @param list
+     * @param list list
      */
     public void setHightLightAreas(List<HighlightArea> list) {
         mHighlightList = list;
@@ -170,6 +171,9 @@ public class EasyGuideView extends DependentLayout implements DrawTask, BindStat
         }
     }
 
+    /**
+     * Recycle bitmap.
+     */
     public void recyclerBitmap() {
         if (mBitmap != null) {
             mBitmap.release();

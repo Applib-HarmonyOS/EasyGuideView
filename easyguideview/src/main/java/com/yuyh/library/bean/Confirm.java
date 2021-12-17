@@ -3,6 +3,8 @@ package com.yuyh.library.bean;
 import ohos.agp.components.Component.ClickedListener;
 
 /**
+ * Confirm class for Ok button.
+ *
  * @author yuyh
  * @date 2016/12/24
  */

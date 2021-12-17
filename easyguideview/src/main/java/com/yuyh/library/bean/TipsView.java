@@ -4,6 +4,8 @@ import ohos.agp.components.Component;
 import ohos.agp.components.DependentLayout.LayoutConfig;
 
 /**
+ * Tipview class.
+ *
  * @author yuyh
  * @date 2016/12/24
  */
@@ -19,6 +21,13 @@ public class TipsView {
 
     private ohos.agp.components.DependentLayout.LayoutConfig params;
 
+    /**
+     * Constructor for creating Tipview.
+     *
+     * @param resId resId
+     * @param offsetX offsetX
+     * @param offsetY offsetY
+     */
     public TipsView(int resId, int offsetX, int offsetY) {
         this.setResId(resId);
         this.setOffsetX(offsetX);

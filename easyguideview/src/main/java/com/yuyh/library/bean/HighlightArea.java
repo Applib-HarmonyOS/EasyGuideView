@@ -4,7 +4,7 @@ import ohos.agp.components.Component;
 import ohos.agp.utils.RectFloat;
 
 /**
- * Highlighted area display
+ * Highlighted area display.
  *
  * @author yuyh
  * @date 2016/12/24

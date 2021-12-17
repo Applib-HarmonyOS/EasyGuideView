@@ -3,6 +3,8 @@ package com.yuyh.library.support;
 import ohos.agp.components.Component;
 
 /**
+ * Callback event from EasyGuide.
+ *
  * @author yuyh
  * @date 2016/12/25
  */

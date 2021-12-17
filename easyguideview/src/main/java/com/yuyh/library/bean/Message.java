@@ -1,6 +1,8 @@
 package com.yuyh.library.bean;
 
 /**
+ * Message class for content data.
+ *
  * @author yuyh
  * @date 2016/12/24
  */

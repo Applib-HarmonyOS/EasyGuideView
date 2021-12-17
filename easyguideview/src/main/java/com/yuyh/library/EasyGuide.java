@@ -17,7 +17,6 @@ import ohos.agp.window.service.DisplayManager;
 import ohos.app.Context;
 import ohos.multimodalinput.event.MmiPoint;
 import ohos.multimodalinput.event.TouchEvent;
-
 import com.yuyh.library.bean.Confirm;
 import com.yuyh.library.bean.HighlightArea;
 import com.yuyh.library.bean.Message;
@@ -30,9 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * EasyGuide implemenation
- * <p>
- * https://github.com/smuyyh/EasyGuideView
+ * EasyGuide implemenation.
+ * https://github.com/smuyyh/EasyGuideView.
  *
  * @author yuyh
  * @date 2016/12/24
@@ -62,13 +60,13 @@ public class EasyGuide {
     /**
      * Constructor for creating EasyGuide.
      *
-     * @param abilitySlice abilitySlice
-     * @param areas areas
-     * @param indicators indicators
-     * @param messages messages
-     * @param confirm confirm
+     * @param abilitySlice           abilitySlice
+     * @param areas                  areas
+     * @param indicators             indicators
+     * @param messages               messages
+     * @param confirm                confirm
      * @param dismissandperformclick dismissandperformclick
-     * @param componentContainer componentContainer
+     * @param componentContainer     componentContainer
      */
     public EasyGuide(AbilitySlice abilitySlice, List<HighlightArea> areas, List<TipsView> indicators,
                      List<Message> messages, Confirm confirm, boolean[] dismissandperformclick,
@@ -85,7 +83,7 @@ public class EasyGuide {
 
 
     /**
-     * Add the listener
+     * Add the listener.
      *
      * @param listener listener
      */
@@ -141,11 +139,11 @@ public class EasyGuide {
             tvConfirm.setPadding(lr, tb, lr, tb);
             tvConfirm.setClickedListener(mConfirm.getListener() != null
                     ? mConfirm.getListener() : new Component.ClickedListener() {
-                @Override
-                public void onClick(Component v) {
-                    dismiss();
-                }
-            });
+                        @Override
+                            public void onClick(Component v) {
+                                dismiss();
+                            }
+                    });
             tipView.addComponent(tvConfirm);
         }
         addView(tipView, Constants.CENTER, Constants.CENTER, new DependentLayout.LayoutConfig(
@@ -254,6 +252,9 @@ public class EasyGuide {
                 && point.getY() >= y && point.getY() <= (y + view.getHeight());
     }
 
+    /**
+     * Builder class for creating easyguide object.
+     */
     public static class Builder {
 
         AbilitySlice activity;
@@ -279,7 +280,7 @@ public class EasyGuide {
         /**
          * Add Highlight area.
          *
-         * @param view view
+         * @param view  view
          * @param shape shape
          */
         public Builder addHightArea(Component view, int shape) {
@@ -302,8 +303,8 @@ public class EasyGuide {
          * Add indicator.
          *
          * @param resId resId
-         * @param offX offX
-         * @param offY offY
+         * @param offX  offX
+         * @param offY  offY
          */
         public Builder addIndicator(int resId, int offX, int offY) {
             Image ivIndicator = new Image(activity);
@@ -325,9 +326,9 @@ public class EasyGuide {
         /**
          * Add view.
          *
-         * @param view view
-         * @param offX offX
-         * @param offY offY
+         * @param view   view
+         * @param offX   offX
+         * @param offY   offY
          * @param params params
          */
         public Builder addView(Component view, int offX, int offY, DependentLayout.LayoutConfig params) {
@@ -338,7 +339,7 @@ public class EasyGuide {
         /**
          * Add message.
          *
-         * @param message message
+         * @param message  message
          * @param textSize textSize
          */
         public Builder addMessage(String message, int textSize) {
@@ -349,7 +350,7 @@ public class EasyGuide {
         /**
          * Add positive button.
          *
-         * @param btnText btnText
+         * @param btnText  btnText
          * @param textSize textSize
          */
         public Builder setPositiveButton(String btnText, int textSize) {
@@ -360,7 +361,7 @@ public class EasyGuide {
         /**
          * Add positive button with listener.
          *
-         * @param btnText btnText
+         * @param btnText  btnText
          * @param textSize textSize
          * @param listener listener
          */
