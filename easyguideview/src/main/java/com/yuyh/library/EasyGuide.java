@@ -24,7 +24,6 @@ import com.yuyh.library.bean.TipsView;
 import com.yuyh.library.constant.Constants;
 import com.yuyh.library.support.OnStateChangedListener;
 import com.yuyh.library.view.EasyGuideView;
-
 import java.util.ArrayList;
 import java.util.List;
 
