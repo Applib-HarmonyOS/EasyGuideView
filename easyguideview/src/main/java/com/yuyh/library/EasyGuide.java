@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2020-21 Application Library Engineering Group
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.yuyh.library;
 
 import ohos.aafwk.ability.AbilitySlice;
@@ -136,7 +120,7 @@ public class EasyGuide {
                 tvMsg.setText(message.getMessagetext());
                 Color hmosColor = EasyGuide.changeParamToColor(ohos.agp.utils.Color.WHITE.getValue());
                 tvMsg.setTextColor(hmosColor);
-                tvMsg.setTextSize(50);
+                tvMsg.setTextSize(message.getTextSize() == -1 ? 12 : message.getTextSize());
                 tipView.addComponent(tvMsg);
             }
         }
@@ -146,7 +130,7 @@ public class EasyGuide {
             tvConfirm.setText(mConfirm.getText());
             Color hmosColor1 = EasyGuide.changeParamToColor(ohos.agp.utils.Color.WHITE.getValue());
             tvConfirm.setTextColor(hmosColor1);
-            tvConfirm.setTextSize(50);
+            tvConfirm.setTextSize(mConfirm.getTextSize() == -1 ? 13 : mConfirm.getTextSize());
             tvConfirm.setBackground(new ShapeElement(mAbilitySlice.getContext(), ResourceTable.Graphic_btn_selector));
             ohos.agp.components.DirectionalLayout.LayoutConfig params = new DirectionalLayout.LayoutConfig(
                     ComponentContainer.LayoutConfig.MATCH_CONTENT, ComponentContainer.LayoutConfig.MATCH_CONTENT);
@@ -300,6 +284,16 @@ public class EasyGuide {
          */
         public Builder addHightArea(Component view, int shape) {
             HighlightArea area = new HighlightArea(view, shape);
+            areas.add(area);
+            return this;
+        }
+
+        /**
+         * Add Highlight area.
+         *
+         * @param area area
+         */
+        public Builder addHightLightArea(HighlightArea area) {
             areas.add(area);
             return this;
         }

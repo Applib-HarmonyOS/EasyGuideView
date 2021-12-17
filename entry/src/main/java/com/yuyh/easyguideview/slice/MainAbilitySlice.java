@@ -78,8 +78,8 @@ public class MainAbilitySlice extends AbilitySlice {
                 .addHightArea(view, Hshape.RECTANGLE)
                 .addParentView(mParentView)
                 .addIndicator(ResourceTable.Media_arrow_right_top, loc[0], loc[1] - 130 + view.getHeight())
-                .addMessage("Menu Content", 14)
-                .setPositiveButton("Ok", 15, new Component.ClickedListener() {
+                .addMessage(getString(ResourceTable.String_message_menu_content), 50)
+                .setPositiveButton(getString(ResourceTable.String_menu_ok), 50, new Component.ClickedListener() {
                     @Override
                     public void onClick(Component v) {
                         easyGuide.dismiss();

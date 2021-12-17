@@ -2,15 +2,19 @@
   "string": [
     {
       "name": "entry_MainAbility",
-      "value": "entry_MainAbility"
+      "value": "EasyGuideView"
     },
     {
       "name": "mainability_description",
       "value": "Java_Empty Ability"
     },
     {
-      "name": "mainability_HelloWorld",
-      "value": "Hello World"
+      "name": "message_menu_content",
+      "value": "Menu Content"
+    },
+    {
+      "name": "menu_ok",
+      "value": "Ok"
     }
   ]
 }

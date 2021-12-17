@@ -15,7 +15,7 @@ A HMOS library which provides guide highlighting tips, simple and easy to use
 1. For using easyguideview module in sample app, include the source code and add the below dependencies in entry/build.gradle to generate hap/support.har.
 ```groovy
 	dependencies {
-		implementation project(':library')
+		implementation project(':easyguideview')
                 implementation fileTree(dir: 'libs', include: ['*.har'])
                 testImplementation 'junit:junit:4.13'
 	}

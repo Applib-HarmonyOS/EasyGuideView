@@ -17,7 +17,7 @@
     ],
     "distro": {
       "deliveryWithInstall": true,
-      "moduleName": "library",
+      "moduleName": "easyguideview",
       "moduleType": "har"
     }
   }
