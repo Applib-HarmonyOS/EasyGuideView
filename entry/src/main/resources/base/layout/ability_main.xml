@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StackLayout
+    xmlns:ohos="http://schemas.huawei.com/res/ohos"
+    ohos:id="$+id:parentLayout"
+    ohos:height="match_parent"
+    ohos:width="match_parent"
+    ohos:top_margin="-40vp"
+    ohos:top_padding="-40vp">
+
+
+    <DependentLayout
+        ohos:height="match_parent"
+        ohos:width="match_parent"
+        ohos:focusable="focus_enable"
+        ohos:right_margin="20vp">
+
+        <Button
+            ohos:id="$+id:menu_button_first"
+            ohos:height="match_content"
+            ohos:width="match_content"
+            ohos:align_parent_right="true"
+            ohos:background_element="$graphic:button_background"
+            ohos:left_margin="20vp"
+            ohos:padding="10vp"
+            ohos:text="Button 1"
+            ohos:text_size="50fp"
+            ohos:top_margin="10vp"
+            ohos:text_color="#FFFFFF"/>
+
+        <Button
+            ohos:id="$+id:menu_button_second"
+            ohos:height="match_content"
+            ohos:width="match_content"
+            ohos:align_parent_right="true"
+            ohos:background_element="$graphic:button_background"
+            ohos:below="$id:menu_button_first"
+            ohos:left_margin="20vp"
+            ohos:padding="10vp"
+            ohos:text="Button 2"
+            ohos:text_color="#FFFFFF"
+            ohos:text_size="50fp"
+            ohos:top_margin="100vp"/>
+
+
+    </DependentLayout>
+</StackLayout>

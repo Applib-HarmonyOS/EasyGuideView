@@ -1,0 +1,24 @@
+{
+  "app": {
+    "bundleName": "com.yuyh.easyguideview",
+    "vendor": "yuyh",
+    "version": {
+      "code": 1000000,
+      "name": "1.0.0"
+    }
+  },
+  "deviceConfig": {
+  },
+  "module": {
+    "package": "com.yuyh.library",
+    "deviceType": [
+      "phone",
+      "tablet"
+    ],
+    "distro": {
+      "deliveryWithInstall": true,
+      "moduleName": "easyguideview",
+      "moduleType": "har"
+    }
+  }
+}
