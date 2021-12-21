@@ -1,3 +1,5 @@
+[![.github/workflows/main.yml](https://github.com/applibgroup/EasyGuideView/actions/workflows/main.yml/badge.svg)](https://github.com/applibgroup/EasyGuideView/actions/workflows/main.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=applibgroup_EasyGuideView&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=applibgroup_EasyGuideView)
 # EasyGuideView
 
 A HMOS library which provides guide highlighting tips, simple and easy to use
@@ -26,6 +28,13 @@ A HMOS library which provides guide highlighting tips, simple and easy to use
 		implementation fileTree(dir: 'libs', include: ['*.har'])
 		testImplementation 'junit:junit:4.13'
 	}
+```
+3. For using easyguideview from a remote repository in separate application, add the below dependencies in entry/build.gradle file.
+``` groovy
+         dependencies {
+             implementation 'dev.applibgroup:easyguideview:1.0.0'  
+	         testCompile 'junit:junit:4.13'
+         }
 ```
 
 ## Usage
